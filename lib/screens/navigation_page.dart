@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fun_cards/controllers/auth_controller.dart';
 import 'package:get/get.dart';
 import 'package:fun_cards/controllers/bottom_navigation_controller.dart';
 import 'package:fun_cards/screens/homepage.dart';
@@ -20,6 +22,9 @@ class NavigationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       body: Obx(() => IndexedStack(
         index: bottomNavigationController.selectedIndex.value,

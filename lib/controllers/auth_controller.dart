@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fun_cards/models/user_model.dart';
 import 'package:fun_cards/screens/login_page.dart';
 import 'package:fun_cards/screens/navigation_page.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
+  static String currentUsername = "";
+  static String currentUserID = "";
   late Rx<User?> _user;
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -33,9 +36,12 @@ class AuthController extends GetxController {
     }
   }
 
-  void register(String email, String password) async {
+  void register(String username, String email, String password) async {
     try {
       await auth.createUserWithEmailAndPassword(email: email, password: password);
+
+      // final User? currentUser = AuthController.instance.auth.currentUser;
+      // final user_id = currentUser?.uid;
       Get.snackbar(
         "Welcome",
         "You have successfully registered!",
@@ -44,6 +50,9 @@ class AuthController extends GetxController {
         borderRadius: 0,
         snackPosition: SnackPosition.BOTTOM
       );
+
+      await createUserDocument(username: username, userID: auth.currentUser?.uid);
+
     } catch(e) {
       Get.snackbar(
           "Account Creation Failed",
@@ -67,5 +76,20 @@ class AuthController extends GetxController {
           backgroundColor: Colors.white
       );
     }
+  }
+
+  Future createUserDocument({required String username, required String? userID}) async {
+
+    currentUsername = username;
+    currentUserID = userID!;
+
+    final userDocument = FirebaseFirestore.instance.collection("users").doc(userID);
+    final userInfo = UserModel(
+        userID: userID,
+        username: username,
+    );
+
+    final userJson = userInfo.toJson();
+    await userDocument.set(userJson);
   }
 }

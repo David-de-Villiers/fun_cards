@@ -21,7 +21,7 @@ class SignUpController extends GetxController {
     final form = formKey.currentState;
     if (form != null && form.validate()) {
       form.save();
-      AuthController.instance.register(email, password);
+      AuthController.instance.register(username, email, password);
       usernameController.clear();
       emailController.clear();
       passwordController.clear();
