@@ -17,7 +17,8 @@ class CustomFormField extends StatelessWidget {
     this.minLines = 1,
     this.fontSize = 14,
     this.shadowHeight = 50,
-    this.alignLabel = false
+    this.alignLabel = false,
+    this.customInputType = TextInputType.text
   }) : super(key: key);
 
   final TextEditingController textController;
@@ -31,6 +32,7 @@ class CustomFormField extends StatelessWidget {
   final double fontSize;
   final double shadowHeight;
   final bool alignLabel;
+  final TextInputType customInputType;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,7 @@ class CustomFormField extends StatelessWidget {
           style: TextStyle(fontSize: fontSize),
           textAlign: TextAlign.left,
           textAlignVertical: TextAlignVertical.top,
+          keyboardType: customInputType,
           decoration: InputDecoration(
               label: Icon(icon),
               alignLabelWithHint: alignLabel,

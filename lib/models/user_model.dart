@@ -18,7 +18,4 @@ class UserModel {
     "isAdmin": isAdmin
   };
 
-  // UserModel.fromDocumentSnapshot({required DocumentSnapshot documentSnapshot}) {
-  //   userID
-  // }
 }

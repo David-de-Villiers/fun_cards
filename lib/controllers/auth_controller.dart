@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fun_cards/constants/firebase_constants.dart';
 import 'package:fun_cards/models/user_model.dart';
 import 'package:fun_cards/screens/login_page.dart';
 import 'package:fun_cards/screens/navigation_page.dart';
@@ -10,6 +11,8 @@ class AuthController extends GetxController {
   static AuthController instance = Get.find();
   static String currentUsername = "";
   static String currentUserID = "";
+  static bool currentUserAdmin = false;
+  static bool currentUserPremium = false;
   late Rx<User?> _user;
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -67,6 +70,7 @@ class AuthController extends GetxController {
   void login(String email, String password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
+      await getUserInformation(userID: auth.currentUser?.uid);
     } catch(e) {
       Get.snackbar(
           "Login Failed",
@@ -78,12 +82,24 @@ class AuthController extends GetxController {
     }
   }
 
+  Future getUserInformation({required String? userID}) async {
+    final userDocument = FirebaseFirestore.instance.collection(usersReference).doc(userID);
+    final docSnapshot = await userDocument.get();
+
+    if (docSnapshot.exists) {
+      currentUsername = docSnapshot["username"];
+      currentUserID = docSnapshot["userID"];
+      currentUserAdmin = docSnapshot["isAdmin"];
+      currentUserPremium = docSnapshot["isPremium"];
+    }
+  }
+
   Future createUserDocument({required String username, required String? userID}) async {
 
     currentUsername = username;
     currentUserID = userID!;
 
-    final userDocument = FirebaseFirestore.instance.collection("users").doc(userID);
+    final userDocument = FirebaseFirestore.instance.collection(usersReference).doc(userID);
     final userInfo = UserModel(
         userID: userID,
         username: username,
